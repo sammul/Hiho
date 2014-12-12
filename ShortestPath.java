@@ -59,6 +59,8 @@
 */
 
 
+
+import java.util.HashMap;
 import java.util.Scanner;
 
 public class ShortestPath{
@@ -80,8 +82,32 @@ public class ShortestPath{
         	edges[start][end] = Math.min(edges[start][end],length);
         	edges[end][start] = edges[start][end];
         }
-        
+        HashMap<Integer,Integer> visited = new HashMap<Integer,Integer>();
+        HashMap<Integer,Integer> cand = new HashMap<Integer,Integer>();
+        for(int i=1; i<=vn; i++){
+        	if(i==entry)
+        		continue;
+        	cand.put(i,edges[entry][i]);
+        }
+        visited.put(entry,0);
+        while(!visited.containsKey(exit)){
+        	int min = Integer.MAX_VALUE;
+        	int nextCand = -1;
+        	for(int i : cand.keySet()){
+        		if(cand.get(i) < min){
+        			min = cand.get(i);
+        			nextCand = i;
+        		}
+        	}
+        	visited.put(nextCand,min);
+        	cand.remove(nextCand);
+        	for(int i=1; i<=vn; i++){
+        		if(visited.containsKey(i))
+        			continue;
+        		cand.put(i,Math.min(cand.get(i),min+edges[nextCand][i]));
+        	}
+        }
+        System.out.println(visited.get(exit));
         sin.close();
     }
-}
 }
